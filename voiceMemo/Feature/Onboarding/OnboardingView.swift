@@ -6,13 +6,29 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    
     @StateObject private var onboardingViewModel = OnboardingViewModel()
+    @StateObject private var pathModel = PathModel()
     
     var body: some View {
         
         //TODO: - 화면 전환 구현 필요
-        OnboardingContentView(onboardingViewModel: onboardingViewModel)
+        NavigationStack(path: $pathModel.paths) {
+            OnboardingContentView(onboardingViewModel: onboardingViewModel)
+                .navigationDestination(for: PathType.self) { pathType in
+                    switch pathType {
+                    case .homView:
+                        HomeView()
+                            .navigationBarBackButtonHidden() //커스텀한 네비게이션 바 사용을 위해
+                    case .todoView:
+                        TodoView()
+                            .navigationBarBackButtonHidden()
+                    case .memoView:
+                        MemoView()
+                            .navigationBarBackButtonHidden()
+                    }
+                }
+        }
+        .environmentObject(pathModel) //pathModel을 전역적으로 사용
     }
 }
 
@@ -29,7 +45,9 @@ private struct OnboardingContentView: View {
             //온보딩 셀리스트 뷰
             OnboardingCellListView(onboardingViewModel: onboardingViewModel)
             //시작버튼 뷰
+            StartBtnView()
         }
+        .ignoresSafeArea()
     }
 }
 
@@ -99,10 +117,31 @@ private struct OnboardingCellView: View {
                 Spacer()
             }
             .background(Color.customWhite)
-//            .clipShape(RoundedRectangle(cornerRadius: 0))
+            //            .clipShape(RoundedRectangle(cornerRadius: 0))
             .cornerRadius(0)
         }
         .shadow(radius: 10)
+    }
+}
+//MARK: - 시작하기 버튼 뷰
+private struct StartBtnView: View {
+    @EnvironmentObject private var pathModel: PathModel
+    
+    fileprivate var body: some View {
+        Button {
+            pathModel.paths.append(.homView)
+        } label: {
+            HStack {
+                Text("시작하기")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.customGreen)
+                
+                Image("startHome")
+                    .renderingMode(.template)
+                    .foregroundColor(.customGreen)
+            }
+        }
+
     }
 }
 

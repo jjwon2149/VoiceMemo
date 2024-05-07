@@ -3,5 +3,8 @@
 //  voiceMemo
 //
 
-enum PathType {
+enum PathType: Hashable {
+    case homView
+    case todoView
+    case memoView
 }
