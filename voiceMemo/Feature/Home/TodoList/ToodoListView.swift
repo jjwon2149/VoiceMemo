@@ -14,7 +14,7 @@ struct TodoListView: View {
             //Todo Cell List
             VStack {
                 //투두가 없다면 네비게이션바가 X
-                if todoListViewModel.todos.isEmpty {
+                if !todoListViewModel.todos.isEmpty {
                     CustomNavigationBar(
                         isDisplayLeftBtn: false,
                         rightBtnAction: {
@@ -161,6 +161,7 @@ private struct TodoCellView: View {
                     Text(todo.title)
                         .font(.system(size: 16))
                         .foregroundStyle(todo.selected ? Color.customIconGray : Color.customBlack)
+                        .strikethrough(todo.selected)
                     
                     Text(todo.converterDayAndTime)
                         .font(.system(size: 16))
@@ -182,7 +183,7 @@ private struct TodoCellView: View {
         .padding(.top, 10)
         
         Rectangle()
-            .fill(Color.customGray0)
+            .fill(Color("customGray0"))
             .frame(height: 1)
     }
 }
